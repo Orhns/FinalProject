@@ -37,7 +37,11 @@ namespace Business.Concrete
         {
             //iş kodları
             //yetkisi var mı? if vb.. then ok to return.
-            return new DataResult(_productDal.GetAll());
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorDataResult();
+            }
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(),true,"Ürünler Listelendi");
         }
 
         public List<Product> GetAllByCategoryId(int id)
