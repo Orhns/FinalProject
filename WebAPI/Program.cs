@@ -1,5 +1,8 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Business.Abstract;
 using Business.Concrete;
+using Business.DependencyResolvers.Autofac;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 
@@ -12,9 +15,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //Autofac, Ninject, CastleWindsor, StructureMap, LightInject -->IoC container
-//AOP
-builder.Services.AddSingleton<IProductService,ProductManager>();
-builder.Services.AddSingleton<IProductDal,EfProductDal>();
+////AOP
+//builder.Services.AddSingleton<IProductService,ProductManager>();
+//builder.Services.AddSingleton<IProductDal,EfProductDal>();
+
+builder.Host
+       .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+       .ConfigureContainer<ContainerBuilder>(builder =>
+       {
+           builder.RegisterModule(new AutofacBusinessModule());
+       });
 
 var app = builder.Build();
 
